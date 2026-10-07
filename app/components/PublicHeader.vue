@@ -1,12 +1,4 @@
 <script setup lang="ts">
-const colorMode = useColorMode()
-const isDark = computed({
-  get: () => colorMode.value === 'dark',
-  set: (val: boolean) => {
-    colorMode.preference = val ? 'dark' : 'light'
-  },
-})
-
 const mobileMenuOpen = ref(false)
 
 const navLinks = [
@@ -69,13 +61,7 @@ function executeLookup() {
           Consultar cita
         </UButton>
 
-        <UButton
-          :icon="isDark ? 'i-material-symbols:light-mode-outline-rounded' : 'i-material-symbols-dark-mode-outline-rounded'"
-          color="neutral"
-          variant="ghost"
-          aria-label="Alternar tema claro/oscuro"
-          @click="isDark = !isDark"
-        />
+        <UColorModeButton />
 
         <UButton
           to="/reservar"

@@ -19,7 +19,7 @@ export default defineAppConfig({
       close: 'i-material-symbols-close-rounded',
       copy: 'i-material-symbols-content-copy-outline-rounded',
       copyCheck: 'i-material-symbols-inventory-rounded',
-      dark: 'i-material-symbols-dark-mode-outline-rounded',
+      dark: 'i-material-symbols:dark-mode-outline-rounded',
       drag: 'i-material-symbols-drag-indicator',
       ellipsis: 'i-material-symbols-more-horiz',
       error: 'i-material-symbols-cancel-outline-rounded',

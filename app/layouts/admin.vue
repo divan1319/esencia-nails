@@ -1,14 +1,6 @@
 <script setup lang="ts">
 import { authClient } from '~/utils/auth-client'
 
-const colorMode = useColorMode()
-const isDark = computed({
-  get: () => colorMode.value === 'dark',
-  set: (val: boolean) => {
-    colorMode.preference = val ? 'dark' : 'light'
-  },
-})
-
 const route = useRoute()
 const mobileMenuOpen = ref(false)
 
@@ -74,14 +66,7 @@ async function logout() {
 
         <div class="flex items-center justify-between px-3 py-1">
           <span class="text-xs text-muted">Tema</span>
-          <UButton
-            :icon="isDark ? 'i-material-symbols:light-mode-outline-rounded' : 'i-material-symbols-dark-mode-outline-rounded'"
-            color="neutral"
-            variant="ghost"
-            size="xs"
-            aria-label="Alternar tema"
-            @click="isDark = !isDark"
-          />
+          <UColorModeButton size="xs" />
         </div>
 
         <UButton
@@ -108,14 +93,7 @@ async function logout() {
       </div>
 
       <div class="flex items-center gap-1">
-        <UButton
-          :icon="isDark ? 'i-material-symbols:light-mode-outline-rounded' : 'i-material-symbols-dark-mode-outline-rounded'"
-          color="neutral"
-          variant="ghost"
-          size="sm"
-          aria-label="Alternar tema"
-          @click="isDark = !isDark"
-        />
+        <UColorModeButton size="sm" />
         <UButton
           :icon="mobileMenuOpen ? 'i-material-symbols-close-rounded' : 'i-material-symbols-menu-rounded'"
           color="neutral"
