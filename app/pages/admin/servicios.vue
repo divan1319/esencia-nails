@@ -145,7 +145,7 @@ function formatPrice(type: string, cents: number | null) {
     </div>
 
     <!-- Lista de servicios -->
-    <div v-if="services?.length" class="space-y-3">
+    <div v-if="services?.length" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       <div
         v-for="service in services"
         :key="service.id"

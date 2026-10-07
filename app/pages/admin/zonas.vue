@@ -124,7 +124,7 @@ async function executeDelete() {
       </UButton>
     </div>
 
-    <div v-if="zones?.length" class="space-y-3">
+    <div v-if="zones?.length" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       <div
         v-for="zone in zones"
         :key="zone.id"

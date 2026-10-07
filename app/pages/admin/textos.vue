@@ -72,7 +72,7 @@ async function saveSettings() {
 </script>
 
 <template>
-  <div class="space-y-6 max-w-2xl">
+  <div class="space-y-6 w-full">
     <div>
       <h1 class="text-2xl font-bold text-(--ui-text-highlighted)">Textos del inicio y contacto</h1>
       <p class="text-sm text-muted mt-1">
@@ -94,69 +94,128 @@ async function saveSettings() {
       Cargando configuración...
     </div>
 
-    <form v-else @submit.prevent="saveSettings" class="p-6 rounded-2xl border border-(--ui-border-muted) bg-(--ui-bg-muted) space-y-5">
-      <UFormField label="Nombre comercial del negocio">
-        <UInput
-          v-model="form.businessName"
-          placeholder="Esencia Nails by Mel"
-          required
-          class="w-full"
-        />
-      </UFormField>
+    <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+      <!-- Formulario principal -->
+      <form @submit.prevent="saveSettings" class="lg:col-span-2 p-6 rounded-2xl border border-(--ui-border-muted) bg-(--ui-bg-muted) space-y-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <UFormField label="Nombre comercial del negocio">
+            <UInput
+              v-model="form.businessName"
+              placeholder="Esencia Nails by Mel"
+              required
+              class="w-full"
+            />
+          </UFormField>
 
-      <UFormField label="Lema / Tagline (bajo el logo)">
-        <UInput
-          v-model="form.tagline"
-          placeholder="Santa Tecla · Servicio a domicilio"
-          class="w-full"
-        />
-      </UFormField>
+          <UFormField label="Lema / Tagline (bajo el logo)">
+            <UInput
+              v-model="form.tagline"
+              placeholder="Santa Tecla · Servicio a domicilio"
+              class="w-full"
+            />
+          </UFormField>
+        </div>
 
-      <UFormField label="Texto principal del Hero (Inicio)">
-        <UTextarea
-          v-model="form.heroText"
-          placeholder="Uñas con diseño, a domicilio en Santa Tecla..."
-          class="w-full"
-        />
-      </UFormField>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <UFormField label="WhatsApp (8 dígitos)">
-          <UInput
-            v-model="form.whatsapp"
-            placeholder="79581732"
+        <UFormField label="Texto principal del Hero (Inicio)">
+          <UTextarea
+            v-model="form.heroText"
+            placeholder="Uñas con diseño, a domicilio en Santa Tecla..."
+            rows="4"
             class="w-full"
           />
         </UFormField>
 
-        <UFormField label="Enlace de Instagram">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <UFormField label="WhatsApp (8 dígitos)">
+            <UInput
+              v-model="form.whatsapp"
+              placeholder="79581732"
+              class="w-full"
+            />
+          </UFormField>
+
+          <UFormField label="Enlace de Instagram">
+            <UInput
+              v-model="form.instagramUrl"
+              placeholder="https://www.instagram.com/esencianailssv/"
+              class="w-full"
+            />
+          </UFormField>
+        </div>
+
+        <UFormField label="Formas de pago aceptadas">
           <UInput
-            v-model="form.instagramUrl"
-            placeholder="https://www.instagram.com/esencianailssv/"
+            v-model="form.paymentMethodsText"
+            placeholder="Efectivo o transferencia"
             class="w-full"
           />
         </UFormField>
-      </div>
 
-      <UFormField label="Formas de pago aceptadas">
-        <UInput
-          v-model="form.paymentMethodsText"
-          placeholder="Efectivo o transferencia"
-          class="w-full"
-        />
-      </UFormField>
+        <div class="pt-2 flex justify-end">
+          <UButton
+            type="submit"
+            color="primary"
+            variant="solid"
+            :loading="saving"
+            class="px-6 font-semibold"
+          >
+            Guardar cambios
+          </UButton>
+        </div>
+      </form>
 
-      <div class="pt-2 flex justify-end">
-        <UButton
-          type="submit"
-          color="primary"
-          variant="solid"
-          :loading="saving"
-          class="px-6 font-semibold"
-        >
-          Guardar cambios
-        </UButton>
+      <!-- Panel lateral con vista previa en desktop -->
+      <div class="space-y-4">
+        <div class="p-5 rounded-2xl border border-(--ui-border-muted) bg-(--ui-bg-muted) space-y-4">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-violet-500/20 text-violet-600 dark:text-violet-400 flex items-center justify-center font-bold text-sm">
+              E
+            </div>
+            <div>
+              <h3 class="text-xs font-semibold text-(--ui-text-highlighted) uppercase tracking-wider">Vista previa</h3>
+              <p class="text-[11px] text-muted">Así se verá en la página pública</p>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-(--ui-bg) border border-(--ui-border-muted) space-y-2">
+            <div>
+              <span class="font-bold text-sm text-(--ui-text-highlighted) block">{{ form.businessName || 'Esencia Nails by Mel' }}</span>
+              <span class="text-xs text-muted block">{{ form.tagline || 'Santa Tecla · Servicio a domicilio' }}</span>
+            </div>
+
+            <p class="text-xs text-(--ui-text-highlighted) pt-2 border-t border-(--ui-border-muted) italic line-clamp-3">
+              "{{ form.heroText || 'Uñas con diseño y servicio a domicilio en Santa Tecla.' }}"
+            </p>
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <div class="flex justify-between py-1 text-muted">
+              <span>WhatsApp:</span>
+              <span class="font-mono text-(--ui-text-highlighted)">{{ form.whatsapp ? '+503 ' + form.whatsapp : 'Sin configurar' }}</span>
+            </div>
+            <div class="flex justify-between py-1 text-muted">
+              <span>Instagram:</span>
+              <span class="text-violet-600 dark:text-violet-400 truncate max-w-[150px]">
+                {{ form.instagramUrl ? form.instagramUrl.replace('https://www.instagram.com/', '@') : 'Sin enlace' }}
+              </span>
+            </div>
+            <div class="flex justify-between py-1 text-muted">
+              <span>Pagos:</span>
+              <span class="text-(--ui-text-highlighted) text-right truncate max-w-[150px]">{{ form.paymentMethodsText || 'Efectivo o transferencia' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl border border-violet-500/20 bg-violet-500/5 text-xs text-muted space-y-1.5">
+          <div class="flex items-center gap-2 font-medium text-violet-600 dark:text-violet-400">
+            <UIcon name="i-material-symbols-info-outline-rounded" class="w-4 h-4" />
+            <span>¿Dónde se muestran estos textos?</span>
+          </div>
+          <p class="text-[11px] leading-relaxed">
+            Actualizan la cabecera, el banner principal de bienvenida, los enlaces directos a WhatsApp y las tarjetas de presentación para compartir en redes.
+          </p>
+        </div>
       </div>
-    </form>
+    </div>
   </div>
 </template>

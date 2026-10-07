@@ -266,7 +266,7 @@ function formatCents(cents: number | null) {
         </div>
 
         <!-- Detalles de la clienta y servicio -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
           <!-- Clienta -->
           <div>
             <span class="text-muted block text-[11px] mb-0.5">Clienta</span>

@@ -135,7 +135,7 @@ async function executeDelete() {
       </UButton>
     </div>
 
-    <div v-if="categories?.length" class="space-y-3">
+    <div v-if="categories?.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       <div
         v-for="cat in categories"
         :key="cat.id"

@@ -134,8 +134,10 @@ async function logout() {
     </div>
 
     <!-- Contenido principal -->
-    <div class="flex-1 p-4 sm:p-8 max-w-5xl overflow-y-auto">
-      <slot />
-    </div>
+    <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 overflow-y-auto w-full">
+      <div class="w-full max-w-7xl mx-auto">
+        <slot />
+      </div>
+    </main>
   </div>
 </template>

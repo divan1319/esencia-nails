@@ -206,7 +206,7 @@ async function deleteBlock(id: string) {
         </UButton>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <div
           v-for="day in weekdays"
           :key="day.value"
@@ -275,7 +275,7 @@ async function deleteBlock(id: string) {
         </UButton>
       </div>
 
-      <div v-if="blockedDates?.length" class="space-y-2">
+      <div v-if="blockedDates?.length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         <div
           v-for="b in blockedDates"
           :key="b.id"

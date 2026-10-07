@@ -103,7 +103,7 @@ async function cancelExpired() {
 </script>
 
 <template>
-  <div class="space-y-8 max-w-3xl">
+  <div class="space-y-8 w-full">
     <div>
       <h1 class="text-2xl font-bold text-(--ui-text-highlighted)">Ajustes y reglas de negocio</h1>
       <p class="text-sm text-muted mt-1">Configura las reglas de cálculo de horarios, anticipos y traslados.</p>
@@ -119,146 +119,182 @@ async function cancelExpired() {
       <span>{{ errorMessage }}</span>
     </div>
 
-    <form @submit.prevent="saveSettings" class="space-y-6">
-      <!-- REGLAS DE RESERVAS -->
-      <div class="p-6 rounded-2xl border border-(--ui-border-muted) bg-(--ui-bg-muted) space-y-4">
-        <h2 class="text-base font-semibold text-(--ui-text-highlighted) border-b border-(--ui-border-muted) pb-2">
-          Horarios y Disponibilidad
-        </h2>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+      <!-- FORMULARIO PRINCIPAL -->
+      <form @submit.prevent="saveSettings" class="lg:col-span-2 space-y-6">
+        <!-- REGLAS DE RESERVAS -->
+        <div class="p-6 rounded-2xl border border-(--ui-border-muted) bg-(--ui-bg-muted) space-y-4">
+          <h2 class="text-base font-semibold text-(--ui-text-highlighted) border-b border-(--ui-border-muted) pb-2">
+            Horarios y Disponibilidad
+          </h2>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <UFormField label="Intervalo entre horarios ofrecidos (minutos)">
-            <UInput v-model.number="form.slotStepMinutes" type="number" step="15" min="15" class="w-full" />
-            <p class="text-[11px] text-muted mt-1">Ej. 30 min (ofrece 4:30, 5:00, 5:30...)</p>
-          </UFormField>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <UFormField label="Intervalo entre horarios ofrecidos (minutos)">
+              <UInput v-model.number="form.slotStepMinutes" type="number" step="15" min="15" class="w-full" />
+              <p class="text-[11px] text-muted mt-1">Ej. 30 min (ofrece 4:30, 5:00, 5:30...)</p>
+            </UFormField>
 
-          <UFormField label="Tiempo de traslado entre citas (minutos)">
-            <UInput v-model.number="form.travelBufferMinutes" type="number" step="15" min="0" class="w-full" />
-            <p class="text-[11px] text-muted mt-1">0 = apagado. Margen antes y después de cada cita.</p>
-          </UFormField>
+            <UFormField label="Tiempo de traslado entre citas (minutos)">
+              <UInput v-model.number="form.travelBufferMinutes" type="number" step="15" min="0" class="w-full" />
+              <p class="text-[11px] text-muted mt-1">0 = apagado. Margen antes y después de cada cita.</p>
+            </UFormField>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <UFormField label="Anticipación mínima para reservar (horas)">
+              <UInput v-model.number="form.minNoticeHours" type="number" min="0" class="w-full" />
+              <p class="text-[11px] text-muted mt-1">Horas previas requeridas antes de poder agendar.</p>
+            </UFormField>
+
+            <UFormField label="Días máximos hacia adelante">
+              <UInput v-model.number="form.maxDaysAhead" type="number" min="1" max="180" class="w-full" />
+              <p class="text-[11px] text-muted mt-1">Ventana máxima visible en el calendario (ej. 30 días).</p>
+            </UFormField>
+          </div>
+
+          <div class="pt-2">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                v-model="form.pendingBlocksSlot"
+                type="checkbox"
+                class="w-4 h-4 rounded text-violet-600 focus:ring-violet-500"
+              />
+              <span class="text-sm font-medium">Una solicitud pendiente ya ocupa el horario</span>
+            </label>
+            <p class="text-[11px] text-muted ml-6 mt-0.5">
+              Impide que dos personas pidan la misma hora simultáneamente antes de que la confirmes.
+            </p>
+          </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <UFormField label="Anticipación mínima para reservar (horas)">
-            <UInput v-model.number="form.minNoticeHours" type="number" min="0" class="w-full" />
-            <p class="text-[11px] text-muted mt-1">Horas previas requeridas antes de poder agendar.</p>
-          </UFormField>
+        <!-- TRASLADO Y ANTICIPOS -->
+        <div class="p-6 rounded-2xl border border-(--ui-border-muted) bg-(--ui-bg-muted) space-y-4">
+          <h2 class="text-base font-semibold text-(--ui-text-highlighted) border-b border-(--ui-border-muted) pb-2">
+            Traslado y Anticipos
+          </h2>
 
-          <UFormField label="Días máximos hacia adelante">
-            <UInput v-model.number="form.maxDaysAhead" type="number" min="1" max="180" class="w-full" />
-            <p class="text-[11px] text-muted mt-1">Ventana máxima visible en el calendario (ej. 30 días).</p>
-          </UFormField>
-        </div>
+          <div>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                v-model="form.chargeTravelFee"
+                type="checkbox"
+                class="w-4 h-4 rounded text-violet-600 focus:ring-violet-500"
+              />
+              <span class="text-sm font-medium">Cobrar recargo de traslado por zona</span>
+            </label>
+            <p class="text-[11px] text-muted ml-6 mt-0.5">
+              Si está activo, suma la tarifa de traslado de la zona elegida al total de la reserva.
+            </p>
+          </div>
 
-        <div class="pt-2">
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input
-              v-model="form.pendingBlocksSlot"
-              type="checkbox"
-              class="w-4 h-4 rounded text-violet-600 focus:ring-violet-500"
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <UFormField label="Modalidad de anticipo">
+              <select
+                v-model="form.depositMode"
+                class="w-full h-10 px-3 rounded-xl border border-(--ui-border-muted) bg-(--ui-bg) text-(--ui-text) text-sm focus:outline-none"
+              >
+                <option value="none">Ninguno (pago al finalizar)</option>
+                <option value="fixed">Monto fijo ($ USD)</option>
+                <option value="percent">Porcentaje (%)</option>
+              </select>
+            </UFormField>
+
+            <UFormField v-if="form.depositMode !== 'none'" :label="form.depositMode === 'fixed' ? 'Monto de anticipo ($ USD)' : 'Porcentaje de anticipo (%)'">
+              <UInput
+                v-model.number="form.depositValue"
+                type="number"
+                step="0.5"
+                min="0"
+                class="w-full"
+              />
+            </UFormField>
+          </div>
+
+          <UFormField v-if="form.depositMode !== 'none'" label="Instrucciones para transferir el anticipo">
+            <UTextarea
+              v-model="form.depositInstructions"
+              placeholder="Ej. Transferencia a cuenta Banco Agrícola #..., o Chivo Wallet a..."
+              class="w-full text-xs font-sans"
             />
-            <span class="text-sm font-medium">Una solicitud pendiente ya ocupa el horario</span>
-          </label>
-          <p class="text-[11px] text-muted ml-6 mt-0.5">
-            Impide que dos personas pidan la misma hora simultáneamente antes de que la confirmes.
-          </p>
-        </div>
-      </div>
-
-      <!-- TRASLADO Y ANTICIPOS -->
-      <div class="p-6 rounded-2xl border border-(--ui-border-muted) bg-(--ui-bg-muted) space-y-4">
-        <h2 class="text-base font-semibold text-(--ui-text-highlighted) border-b border-(--ui-border-muted) pb-2">
-          Traslado y Anticipos
-        </h2>
-
-        <div>
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input
-              v-model="form.chargeTravelFee"
-              type="checkbox"
-              class="w-4 h-4 rounded text-violet-600 focus:ring-violet-500"
-            />
-            <span class="text-sm font-medium">Cobrar recargo de traslado por zona</span>
-          </label>
-          <p class="text-[11px] text-muted ml-6 mt-0.5">
-            Si está activo, suma la tarifa de traslado de la zona elegida al total de la reserva.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-          <UFormField label="Modalidad de anticipo">
-            <select
-              v-model="form.depositMode"
-              class="w-full h-10 px-3 rounded-xl border border-(--ui-border-muted) bg-(--ui-bg) text-(--ui-text) text-sm focus:outline-none"
-            >
-              <option value="none">Ninguno (pago al finalizar)</option>
-              <option value="fixed">Monto fijo ($ USD)</option>
-              <option value="percent">Porcentaje (%)</option>
-            </select>
-          </UFormField>
-
-          <UFormField v-if="form.depositMode !== 'none'" :label="form.depositMode === 'fixed' ? 'Monto de anticipo ($ USD)' : 'Porcentaje de anticipo (%)'">
-            <UInput
-              v-model.number="form.depositValue"
-              type="number"
-              step="0.5"
-              min="0"
-              class="w-full"
-            />
           </UFormField>
         </div>
 
-        <UFormField v-if="form.depositMode !== 'none'" label="Instrucciones para transferir el anticipo">
-          <UTextarea
-            v-model="form.depositInstructions"
-            placeholder="Ej. Transferencia a cuenta Banco Agrícola #..., o Chivo Wallet a..."
-            class="w-full text-xs font-sans"
-          />
-        </UFormField>
-      </div>
+        <div class="flex justify-end">
+          <UButton
+            type="submit"
+            color="primary"
+            variant="solid"
+            size="lg"
+            class="font-semibold px-6"
+            :loading="saving"
+          >
+            Guardar ajustes
+          </UButton>
+        </div>
+      </form>
 
-      <div class="flex justify-end">
-        <UButton
-          type="submit"
-          color="primary"
-          variant="solid"
-          size="lg"
-          class="font-semibold px-6"
-          :loading="saving"
-        >
-          Guardar ajustes
-        </UButton>
-      </div>
-    </form>
-
-    <!-- AJUSTES AVANZADOS -->
-    <div class="p-6 rounded-2xl border border-red-500/20 bg-red-500/5 space-y-4 mt-8">
-      <div>
-        <h2 class="text-base font-semibold text-red-600 dark:text-red-400">Ajustes avanzados</h2>
-        <p class="text-xs text-muted mt-0.5">Acciones masivas de limpieza y mantenimiento.</p>
-      </div>
-
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
-        <div>
-          <span class="text-sm font-medium block">Cancelar pendientes vencidas</span>
-          <span class="text-xs text-muted block mt-0.5">
-            Pasa a estado cancelado todas las reservas pendientes cuya fecha y hora de inicio ya pasaron.
-          </span>
+      <!-- PANEL LATERAL: RESUMEN Y ACCIONES AVANZADAS -->
+      <div class="space-y-6">
+        <!-- Resumen de reglas activas -->
+        <div class="p-5 rounded-2xl border border-(--ui-border-muted) bg-(--ui-bg-muted) space-y-3">
+          <h3 class="text-xs font-semibold text-(--ui-text-highlighted) uppercase tracking-wider">Reglas activas</h3>
+          <div class="space-y-2 text-xs text-muted">
+            <div class="flex justify-between py-1 border-b border-(--ui-border-muted)">
+              <span>Paso de franjas:</span>
+              <span class="font-semibold text-(--ui-text-highlighted)">{{ form.slotStepMinutes }} min</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-(--ui-border-muted)">
+              <span>Margen entre citas:</span>
+              <span class="font-semibold text-(--ui-text-highlighted)">{{ form.travelBufferMinutes }} min</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-(--ui-border-muted)">
+              <span>Anticipación mínima:</span>
+              <span class="font-semibold text-(--ui-text-highlighted)">{{ form.minNoticeHours }} h</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-(--ui-border-muted)">
+              <span>Ventana visible:</span>
+              <span class="font-semibold text-(--ui-text-highlighted)">{{ form.maxDaysAhead }} días</span>
+            </div>
+            <div class="flex justify-between py-1">
+              <span>Recargo por zona:</span>
+              <span class="font-semibold" :class="form.chargeTravelFee ? 'text-emerald-500' : 'text-muted'">
+                {{ form.chargeTravelFee ? 'Activo' : 'Inactivo' }}
+              </span>
+            </div>
+          </div>
         </div>
 
-        <UButton
-          color="error"
-          variant="solid"
-          size="sm"
-          :loading="cancelingExpired"
-          @click="cancelExpired"
-        >
-          Cancelar vencidas
-        </UButton>
-      </div>
+        <!-- AJUSTES AVANZADOS -->
+        <div class="p-5 rounded-2xl border border-red-500/20 bg-red-500/5 space-y-4">
+          <div>
+            <h2 class="text-sm font-semibold text-red-600 dark:text-red-400">Ajustes avanzados</h2>
+            <p class="text-[11px] text-muted mt-0.5">Acciones masivas de limpieza y mantenimiento.</p>
+          </div>
 
-      <div v-if="cancelResult" class="p-3 rounded-xl bg-(--ui-bg) border border-(--ui-border-muted) text-xs text-muted">
-        {{ cancelResult }}
+          <div class="space-y-2">
+            <span class="text-xs font-medium block">Cancelar pendientes vencidas</span>
+            <p class="text-[11px] text-muted leading-relaxed">
+              Pasa a estado cancelado todas las solicitudes pendientes cuya fecha y hora de inicio ya pasaron.
+            </p>
+
+            <div class="pt-2">
+              <UButton
+                color="error"
+                variant="solid"
+                size="sm"
+                block
+                :loading="cancelingExpired"
+                @click="cancelExpired"
+              >
+                Cancelar vencidas
+              </UButton>
+            </div>
+          </div>
+
+          <div v-if="cancelResult" class="p-3 rounded-xl bg-(--ui-bg) border border-(--ui-border-muted) text-xs text-muted">
+            {{ cancelResult }}
+          </div>
+        </div>
       </div>
     </div>
   </div>

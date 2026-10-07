@@ -183,7 +183,7 @@ function getCategoryName(id: string | null) {
     </div>
 
     <!-- Cuadrícula de fotos existentes -->
-    <div v-if="galleryData?.items?.length" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+    <div v-if="galleryData?.items?.length" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
       <div
         v-for="item in galleryData.items"
         :key="item.id"
