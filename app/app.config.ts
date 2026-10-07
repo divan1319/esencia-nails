@@ -31,7 +31,7 @@ export default defineAppConfig({
       folderOpen: 'i-material-symbols-folder-open-outline-rounded',
       hash: 'i-material-symbols-tag-rounded',
       info: 'i-material-symbols-info-outline-rounded',
-      light: 'i-material-symbols-light-mode-outline-rounded',
+      light: 'i-material-symbols:light-mode-outline-rounded',
       loading: 'i-material-symbols-progress-activity',
       menu: 'i-material-symbols-menu-rounded',
       minus: 'i-material-symbols-remove-rounded',

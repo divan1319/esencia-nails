@@ -75,7 +75,7 @@ async function logout() {
         <div class="flex items-center justify-between px-3 py-1">
           <span class="text-xs text-muted">Tema</span>
           <UButton
-            :icon="isDark ? 'i-material-symbols-light-mode-outline-rounded' : 'i-material-symbols-dark-mode-outline-rounded'"
+            :icon="isDark ? 'i-material-symbols:light-mode-outline-rounded' : 'i-material-symbols-dark-mode-outline-rounded'"
             color="neutral"
             variant="ghost"
             size="xs"
@@ -109,7 +109,7 @@ async function logout() {
 
       <div class="flex items-center gap-1">
         <UButton
-          :icon="isDark ? 'i-material-symbols-light-mode-outline-rounded' : 'i-material-symbols-dark-mode-outline-rounded'"
+          :icon="isDark ? 'i-material-symbols:light-mode-outline-rounded' : 'i-material-symbols-dark-mode-outline-rounded'"
           color="neutral"
           variant="ghost"
           size="sm"

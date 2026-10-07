@@ -70,7 +70,7 @@ function executeLookup() {
         </UButton>
 
         <UButton
-          :icon="isDark ? 'i-material-symbols-light-mode-outline-rounded' : 'i-material-symbols-dark-mode-outline-rounded'"
+          :icon="isDark ? 'i-material-symbols:light-mode-outline-rounded' : 'i-material-symbols-dark-mode-outline-rounded'"
           color="neutral"
           variant="ghost"
           aria-label="Alternar tema claro/oscuro"
