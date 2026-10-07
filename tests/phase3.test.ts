@@ -94,3 +94,13 @@ test('Fase 3 Criterio 3: Proyección pública segura de la reserva (sin adminNot
   assert.equal(publicProjection.code, 'MEL123')
   assert.equal(publicProjection.status, 'confirmed')
 })
+
+test('Fase 3 Criterio 4: Generación de signedUrl con AWS SigV4 para Neon Object Storage', async () => {
+  const { signedUrl, SIGNED_URL_EXPIRES_IN } = await import('../server/utils/storage')
+  const key = 'galeria/test-monogram.webp'
+  const url = await signedUrl(key)
+
+  assert.ok(url.includes('X-Amz-Signature='), 'Debe incluir firma AWS SigV4')
+  assert.ok(url.includes(`X-Amz-Expires=${SIGNED_URL_EXPIRES_IN}`), 'Debe incluir tiempo de expiración')
+  assert.ok(url.includes('galeria/test-monogram.webp'), 'Debe apuntar a la key especificada')
+})

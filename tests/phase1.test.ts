@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { requireAdmin } from '../server/utils/auth'
 import { IMAGE_LIMITS, detectImageKind } from '../server/utils/image'
-import { publicUrl } from '../server/utils/storage'
+import { publicUrl, s3DirectUrl } from '../server/utils/storage'
 
 test('Criterio: requireAdmin lanza 401 sin sesión', async () => {
   // Simular evento sin cookies/headers de sesión
@@ -39,15 +39,19 @@ test('Criterio: límites de optimización de imágenes (WebP y JPEG)', () => {
   assert.equal(detectImageKind(pngHeader), null)
 })
 
-test('Criterio: URL pública de S3 con AWS_ENDPOINT_URL_S3', () => {
+test('Criterio: URL pública de S3 con AWS_ENDPOINT_URL_S3 y proxy /api/files', () => {
   process.env.AWS_ENDPOINT_URL_S3 = 'https://storage.neon.tech'
   process.env.S3_BUCKET = 'uploads'
 
+  // publicUrl devuelve la ruta estable de la app para no exponer URLs temporales ni fallar por 403
   const url = publicUrl('galeria/foto-600.webp')
-  assert.equal(url, 'https://storage.neon.tech/uploads/galeria/foto-600.webp')
+  assert.equal(url, '/api/files/galeria/foto-600.webp')
 
-  // Si el endpoint ya incluyera el bucket
+  // s3DirectUrl resuelve la URL directa con AWS_ENDPOINT_URL_S3
+  const direct1 = s3DirectUrl('galeria/foto-600.webp')
+  assert.equal(direct1, 'https://storage.neon.tech/uploads/galeria/foto-600.webp')
+
   process.env.AWS_ENDPOINT_URL_S3 = 'https://storage.neon.tech/uploads'
-  const url2 = publicUrl('galeria/foto-600.webp')
-  assert.equal(url2, 'https://storage.neon.tech/uploads/galeria/foto-600.webp')
+  const direct2 = s3DirectUrl('galeria/foto-600.webp')
+  assert.equal(direct2, 'https://storage.neon.tech/uploads/galeria/foto-600.webp')
 })
